@@ -1,0 +1,83 @@
+<!DOCTYPE html><html><head><title>WebSocket 分享</title><meta charset='utf-8'><link href='https://dn-maxiang.qbox.me/res-min/themes/marxico.css' rel='stylesheet'><style>
+.note-content  {font-family: "Helvetica Neue", Arial, "Hiragino Sans GB", STHeiti, "Microsoft YaHei", "WenQuanYi Micro Hei", SimSun, Song, sans-serif;}
+
+</style></head><body><div id='preview-contents' class='note-content'>
+                        
+                    
+
+
+
+<h2 id="websocket-分享">WebSocket 分享</h2>
+
+<p>WebSocket protocol 是HTML5一种新的协议。它实现了浏览器与服务器全双工通信。</p>
+
+<p>在WebSocket API中，浏览器和服务器只需要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。</p>
+
+
+
+<h3 id="关于websocket">关于Websocket</h3>
+
+<p>它解决了web实时化的问题，相比传统http有如下好处：</p>
+
+<p>一个WEB客户端只建立一个TCP连接</p>
+
+<p>Websocket服务端可以推送(push)数据到web客户端.</p>
+
+<p>有更加轻量级的头，减少数据传送量</p>
+
+<p>在 WebSocket API，浏览器和服务器只需要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。在此WebSocket 协议中，为我们实现即时服务带来了两大好处：</p>
+
+<ol><li rel="1">Header <br>
+互相沟通的Header是很小的-大概只有 2 Bytes</li>
+<li rel="2">Server Push <br>
+服务器的推送，服务器不再被动的接收到浏览器的request之后才返回数据，而是在有新数据时就主动推送给浏览器。</li>
+</ol>
+
+
+
+<h3 id="服务器">服务器</h3>
+
+<p>在服务器方面，网上都有不同对websocket支持的服务器：</p>
+
+<p>php - <a href="http://code.google.com/p/phpwebsocket/" target="_blank">http://code.google.com/p/phpwebsocket/</a> <br>
+jetty - <a href="http://jetty.codehaus.org/jetty/" target="_blank">http://jetty.codehaus.org/jetty/</a>（版本7开始支持websocket） <br>
+netty - <a href="http://www.jboss.org/netty" target="_blank">http://www.jboss.org/netty</a> <br>
+ruby - <a href="http://github.com/gimite/web-socket-ruby" target="_blank">http://github.com/gimite/web-socket-ruby</a> <br>
+Kaazing - <a href="http://www.kaazing.org/confluence/display/KAAZING/Home" target="_blank">http://www.kaazing.org/confluence/display/KAAZING/Home</a> <br>
+Tomcat - <a href="http://tomcat.apache.org/" target="_blank">http://tomcat.apache.org/</a>（7.0.27支持websocket，建议用tomcat8，7.0.27中的接口已经过时） <br>
+WebLogic - <a href="http://www.oracle.com/us/products/middleware/cloud-app-foundation/weblogic/overview/index.html" target="_blank">http://www.oracle.com/us/products/middleware/cloud-app-foundation/weblogic/overview/index.html</a>（12.1.2開始支持） <br>
+node.js - <a href="https://github.com/Worlize/WebSocket-Node" target="_blank">https://github.com/Worlize/WebSocket-Node</a> <br>
+<strong>node.js - <a href="http://socket.io" target="_blank">http://socket.io</a></strong> <br>
+nginx - <a href="http://nginx.com/" target="_blank">http://nginx.com/</a> <br>
+mojolicious - <a href="http://mojolicio.us/" target="_blank">http://mojolicio.us/</a> <br>
+python - <a href="https://github.com/abourget/gevent-socketio" target="_blank">https://github.com/abourget/gevent-socketio</a> <br>
+Django - <a href="https://github.com/stephenmcd/django-socketio" target="_blank">https://github.com/stephenmcd/django-socketio</a> <br>
+erlang - <a href="https://github.com/ninenines/cowboy.git" target="_blank">https://github.com/ninenines/cowboy.git</a></p>
+
+<p><strong>注意</strong> <br>
+websocket api在浏览器端的广泛实现似乎只是一个时间问题了, 值得注意的是服务器端没有标准的api, 各个实现都有自己的一套api, 并且jcp也没有类似的提案, 所以使用websocket开发服务器端有一定的风险.可能会被锁定在某个平台上或者将来被迫升级.</p>
+
+
+
+<h3 id="服务端事件代码">服务端事件代码</h3>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-javascript hljs">io.on(<span class="hljs-string">'connection'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">socket</span>) </span>{<br>  <span class="hljs-comment">//建立连接</span><br><br>  socket.on(<span class="hljs-string">'serverMsg'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{ <br>    <span class="hljs-comment">//收到客户端推送消息</span><br>     socket.broadcast.emit(<span class="hljs-string">'clientMsg'</span>, data);<br>     <span class="hljs-comment">//推送消息给客户端</span><br>  });<br>  socket.on(<span class="hljs-string">'disconnect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{ <br>  <span class="hljs-comment">//断开连接</span><br>  });<br><br>});<br><br></code></pre>
+
+
+
+<h3 id="客户端事件代码">客户端事件代码</h3>
+
+
+
+<pre class="prettyprint hljs-dark"><code class="language-javascript hljs"> socket.on(<span class="hljs-string">'connect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{<br>   <span class="hljs-comment">//建立连接</span><br>  });<br><br> socket.on(<span class="hljs-string">'disconnect'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{<br> <span class="hljs-comment">//客户端断开连接</span><br> });<br> socket.on(<span class="hljs-string">'clientMsg'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>) </span>{<br> <span class="hljs-comment">//客户端收到服务端消息处理</span><br> });<br></code></pre>
+
+
+
+<h3 id="使用">使用</h3>
+
+<pre class="prettyprint hljs-dark"><code class="hljs elixir">创建一个基于 <span class="hljs-string">"webpack"</span> 模板的新项目<br><span class="hljs-variable">$ </span>vue init webpack my-project <br><span class="hljs-comment">#进入目录</span><br><span class="hljs-variable">$ </span>cd my-project  <br><span class="hljs-comment">#安装依赖</span><br><span class="hljs-variable">$ </span>npm install <br><span class="hljs-comment"># 安装 socket.io</span><br><span class="hljs-variable">$ </span>npm install socket.io --save-dev <br><span class="hljs-comment">#启动应用</span><br><span class="hljs-variable">$ </span>npm run dev <br></code></pre>
+
+<p><strong>注意</strong>  <br>
+在<code>connection</code>事件的回调函数中，<code>socket</code>表示的是当前连接到服务器的那个客户端。所以代码<code>socket.emit('foo')</code>则只有自己收得到这个事件，而<code>socket.broadcast.emit('foo')</code>则表示向除自己外的所有人发送该事件，另外，上面代码中，<code>io</code>表示服务器整个socket连接，所以代码<code>io.sockets.emit('foo')</code>表示所有人都可以收到该事件。</p></div></body></html>
