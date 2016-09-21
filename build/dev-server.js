@@ -15,7 +15,9 @@ var port = process.env.PORT || config.dev.port
 // https://github.com/chimurai/http-proxy-middleware
 var proxyTable = config.dev.proxyTable
 
-var app = express()
+var app = require('./sockets').app ;
+
+var server = require('./sockets').server ;
 
 
 
@@ -58,7 +60,13 @@ app.use(devMiddleware)
 app.use(hotMiddleware)
 
 
+module.exports = server.listen(port,function (err) {
+  if (err) {
+    console.log(err)
+    return
+  }
+  console.log('Listening at http://localhost:' + port + '\n')
+})
 
-exports.app = app;
+require('./sockets').ioSocket();
 
-var zhouqing = require('./zqsockets.js');

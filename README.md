@@ -30,3 +30,12 @@ For detailed explanation on how things work, checkout the [guide](https://github
 
 # 安装 socket.io
  npm install socket.io --save-dev
+
+
+
+ ### 修改内容
+
+2016/09/21/ 16:46
+
+socket 部分是 共用，dev-server 和 server的区别是 开发中有热替换。 差别不大
+

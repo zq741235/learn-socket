@@ -1,7 +1,10 @@
 import msglist from '../components/msglist'
 
-var socket = io.connect();
+//var socket = io.connect('http://localhost');
+//
+//var io = require('socket.io')(server)
 
+var socket = io.connect();
 //var socket;
 var clientId;
 
