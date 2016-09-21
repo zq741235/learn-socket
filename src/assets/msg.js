@@ -5,7 +5,7 @@ import msglist from '../components/msglist'
 //var io = require('socket.io')(server)
 
 var socket = io.connect();
-//var socket;
+
 var clientId;
 
 /**
